@@ -65,7 +65,7 @@ def main():
             + relevant_info
         )
         response = openai.Completion.create(
-            engine="text-davinci-003", prompt=prompt temperature=0.3, max_tokens=2000
+            engine="text-davinci-003", prompt=prompt, temperature=0.3, max_tokens=2000
         )
         brainstorming_output = response["choices"][0]["text"]
         st.info(brainstorming_output)
