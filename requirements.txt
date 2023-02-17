@@ -1,3 +1,5 @@
 openai
 streamlit
 pandas
+requests
+bs4
