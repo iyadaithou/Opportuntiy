@@ -30,7 +30,7 @@ def process_page(url,relevant_info):
     text_content = "\n".join(parser.get_data())
     summary = openai.Completion.create(
         engine="text-davinci-003",
-        prompt="does this information: "+text_content+"  \n help  to improve response to what does the organization do and whcih qualities shall someone have to be a good fit for it? Here is the current information "+ relevant_info+" rewite a new response if it will provide clearer answer to the question, if not keep it unchanged ",
+        prompt="does this information: "+text_content+"  \n help  to improve response to what does the organization do, what the corporation is, and whcih qualities shall someone have to be a good fit for it? Here is the current information "+ relevant_info+" rewite a new response if it will provide clearer answer to the question, if not keep it unchanged ",
         temperature=0.5,
         max_tokens=450,
         n=1,
@@ -61,7 +61,7 @@ def main():
         list_of_urls = MyHTMLParser(input_text).get_urls()
         relevant_info = process_pages(list_of_urls[:5])
         prompt = (
-            "Avoid repetition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then list the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted, follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text: "
+            "Avoid repetition and being too generic, and write in a clear style with an advising tone. First define what is the program? is it a school? summer institue, a company? or what exactly, then list the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted, follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text: "
             + relevant_info
         )
         response = openai.Completion.create(
