@@ -51,7 +51,7 @@ if st.session_state['output'] <=2:
     st.markdown("""
     # Brainlyne Opportunity Analyzer
     """)
-    input_text = st.text_input("Paste the website url", disabled=False, placeholder="Paste th eopportunity url and let us do the magic!")
+    input_text = st.text_input("Paste the website url", disabled=False, placeholder="Paste the opportunity's url, and let us do the magic!")
     st.session_state['output'] = st.session_state['output'] + 1
 else:
     # input_text = st.text_input("Brainstorm ideas for", disabled=True)
@@ -128,7 +128,7 @@ if input_text:
     prompt = " Tell me what in a list what I should focus on if I want to be selected for this opportunity and examples of what I need to highlight "+str(text_content)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
-        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=800)
+        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
         brainstorming_output = response['choices'][0]['text']
         today = datetime.today().strftime('%Y-%m-%d')
         topic = "Essay"+input_text+"\n@Date: "+str(today)+"\n"+brainstorming_output
