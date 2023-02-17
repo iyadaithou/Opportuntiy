@@ -64,7 +64,7 @@ def run_app():
         listofurls= get_all_pages(input_text)
         relevant_info= loop.run_until_complete(main(listofurls))
         #prompt = "Avoid repeition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then list the qualities or strengths I should focus on to be good fit for this opportunity and get accepted, follow that by stories and example of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+relevant_info    
-        prompt = relevant_info    
+        prompt = relevant_info +"Hello"   
 
         if prompt:
             response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
