@@ -178,8 +178,7 @@ if input_text:
 
 
 
-    prompt = "Avoid repeition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then tlist the qualities or strengths I should focus on to be good fit for this opportunity and get accepted, follow that by stories and example of how to alk about those qualities. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+str(relevant_info)
-    
+    prompt = "Avoid repeition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then tlist the qualities or strengths I should focus on to be good fit for this opportunity and get accepted, follow that by stories and example of how to alk about those qualities. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+relevant_info    
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
