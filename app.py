@@ -135,10 +135,10 @@ if input_text:
         text_content = ''
         for p in soup.find_all('p'):
             text_content += p.text
-        
+        openai.api_key = st.secrets["openaiKey"]
         # Use OpenAI to summarize the text content
         summary = openai.Completion.create(
-            engine="text-davinci-002",
+            engine="text-davinci-003",
             prompt=f"In this text which information is helpful in explaining what the opporuntity is and please extract email or contact infomarion if they are present{text_content}",
             temperature=0.3,
             max_tokens=60,
@@ -148,10 +148,6 @@ if input_text:
         
         # Extract relevant information from the summary
         relevant_info += summary['choices'][0]['text']
-
-
-
-    
 
     prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also advise me of who to contact and what to say in inital reach out "+str(relevant_info)
     if prompt:
