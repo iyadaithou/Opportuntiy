@@ -117,6 +117,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+loop = asyncio.get_event_loop()
 def get_all_pages(domain_url):
     # Parse the domain URL to extract the subdomain
     
@@ -166,14 +167,6 @@ async def process_pages(urls):
 async def main(urls):
     relevant_info = await process_pages(urls)
     return relevant_info
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    urls = ['https://example.com/page1', 'https://example.com/page2', 'https://example.com/page3']
-    relevant_info_string = loop.run_until_complete(main(urls))
-
-
-
 
 
 if input_text:
