@@ -20,7 +20,7 @@ class MyHTMLParser(HTMLParser):
                 self.urls.append(attr[1])
 
     def get_urls(self):
-        return self.urls[:5]
+        return self.urls[0:5]
 
 
 def process_page(url,relevant_info):
@@ -75,7 +75,7 @@ def main():
         list_of_urls = MyHTMLParser(input_text).get_urls()
         relevant_info = process_pages(list_of_urls[:5])
         prompt = (
-            "Avoid repetition and being generic, and write in a clear style with an advising tone. First gives the name of the program, then waht is the program? is it a school? summer institue, a company? or what exactly, then list the qualities or strengths I should focus on to be a good fit for this specifc program;  follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program "
+            "Avoid repetition and being generic, and write in a clear style with an advising tone. First gives what is the program? is it a school? summer institue, a company? or what exactly, then list the qualities or strengths I should focus on to be a good fit for this specifc program;  follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program "
             + relevant_info
         )
         response = openai.Completion.create(
