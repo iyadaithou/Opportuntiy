@@ -114,18 +114,44 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
+relevant_info=""
 if input_text:
+
+    # Send a GET request to the base URL and extract its content
     response = requests.get(input_text)
+    soup = BeautifulSoup(response.content, "html.parser")
 
-    soup = BeautifulSoup(response.content, 'html.parser')
+    # Find all the links on the page that point to the same domain
+    links = soup.find_all("a", href=re.compile("^" + base_url))
 
-# Extract the text content from the parsed HTML
-    text_content = ''
-    for p in soup.find_all('p'):
-        text_content += p.text
+    for link in links:
+        url = link.get("href")
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, "html.parser")
+    
+    # Extract the text content from the parsed HTML
+        text_content = ''
+        for p in soup.find_all('p'):
+            text_content += p.text
+        
+        # Use OpenAI to summarize the text content
+        summary = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt=f"In this text which information is helpful in explaining what the opporuntity is and please extract email or contact infomarion if they are present{text_content}",
+            temperature=0.3,
+            max_tokens=60,
+            n=1,
+            stop=None,
+        )
+        
+        # Extract relevant information from the summary
+        relevant_info += summary['choices'][0]['text']:
 
-    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for "+str(text_content)
+
+
+    
+
+    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also advise me of who to contact and what to say in inital reach out "+str(relevant_info)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
