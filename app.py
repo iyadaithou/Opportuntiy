@@ -144,7 +144,7 @@ async def process_page(url):
     # Use OpenAI to summarize the text content
     summary = await openai.Completion.create(
         engine="text-davinci-003",
-        prompt=f"which quality would this program be looking for for a potential candidate, and which example can I give to be a good fit. Don't give me generic sentences. Try to extract key implied qualities  {text_content}",
+        prompt=f"Don't give generic sentences, What is this program about and which list of qualities would make someone a good fit for this program{text_content}",
         temperature=0.5,
         max_tokens=600,
         n=1,
@@ -177,7 +177,7 @@ if input_text:
 
 
 
-    prompt = "Avoide repeition, and write in a clear style with an advising tone. Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites, by sharing some stories. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+str(relevant_info)
+    prompt = "Avoid repeition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then tlist the qualities or strengths I should focus on to be good fit for this opportunity and get accepted, follow that by stories and example of how to alk about those qualities. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+str(relevant_info)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
