@@ -20,7 +20,7 @@ class MyHTMLParser(HTMLParser):
                 self.urls.append(attr[1])
 
     def get_urls(self):
-        return self.urls
+        return self.urls[:5]
 
 
 def process_page(url,relevant_info):
