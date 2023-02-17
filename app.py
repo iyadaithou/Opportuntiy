@@ -145,7 +145,7 @@ if input_text:
         )
         
         # Extract relevant information from the summary
-        relevant_info += summary['choices'][0]['text']:
+        relevant_info += summary['choices'][0]['text']
 
 
 
