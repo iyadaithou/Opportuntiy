@@ -180,7 +180,7 @@ if input_text:
     prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites, by sharing some stories. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program"+str(relevant_info)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
-        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
+        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=10000)
         brainstorming_output = response['choices'][0]['text']
         today = datetime.today().strftime('%Y-%m-%d')
         topic = "Essay"+input_text+"\n@Date: "+str(today)+"\n"+brainstorming_output
