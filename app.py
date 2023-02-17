@@ -144,9 +144,9 @@ async def process_page(url):
     # Use OpenAI to summarize the text content
     summary = await openai.Completion.create(
         engine="text-davinci-003",
-        prompt=f"What does this organization do? which list of qualities will someone need to have to work here, get accepted, or join the team; {text_content}",
-        temperature=0.5,
-        max_tokens=600,
+        prompt=f"What does this organization do? which list of qualities will someone need to have to work here, get accepted, or join the team; Make it concise and very brief without losing relevant information {text_content}",
+        temperature=0.2,
+        max_tokens=100,
         n=1,
         stop=None,
     )
@@ -181,7 +181,8 @@ if input_text:
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
-        brainstorming_output = response['choices'][0]['text']
+        #brainstorming_output = response['choices'][0]['text']
+        brainstorming_output = print(relevant_info)
         today = datetime.today().strftime('%Y-%m-%d')
         topic = "Essay"+input_text+"\n@Date: "+str(today)+"\n"+brainstorming_output
         
