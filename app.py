@@ -1,18 +1,11 @@
-import streamlit as st
-import openai
-from datetime import datetime
-from streamlit.components.v1 import html
-import pandas as pd
-import csv
+import asyncio
 import requests
 from bs4 import BeautifulSoup
-import re 
-
-
-
+import re
+import openai
+import streamlit as st
 
 st.set_page_config(page_title="Brainlyne Opportunity Analyzer")
-
 
 html_temp = """
                 <div style="background-color:{};padding:1px">
@@ -24,11 +17,10 @@ button = """
 <script type="text/javascript" src="https://brainlyne.com" data-name="bmc-button" data-slug="nainiayoub" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Join Brainlyne" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
 """
 
-
 with st.sidebar:
     st.markdown("""
     # About 
-    Brainlyne Opporunity Analyzer is a tool built and tuned to support students applying to specifc opporunities
+    Brainlyne Opporunity Analyzer is a tool built and tuned to support students applying to specific opporunities
     """)
     st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
     st.markdown("""
@@ -42,8 +34,6 @@ with st.sidebar:
     """,
     unsafe_allow_html=True,
     )
-
-
 
 input_text = None
 if 'output' not in st.session_state:
@@ -113,12 +103,13 @@ st.markdown(
         }
     </style>
     """,
-    unsafe_allow_html=True,
-)
+ unsafe_allow_html=True
+   )
 
-relevant_info=""
+
+    relevant_info=""
 if input_text:
-
+    urls = [input_text]
     # Send a GET request to the base URL and extract its content
     response = requests.get(input_text)
     soup = BeautifulSoup(response.content, "html.parser")
@@ -128,18 +119,23 @@ if input_text:
 
     for link in links:
         url = link.get("href")
-        response = requests.get(url)
+        urls.append(url)
+
+    openai.api_key = st.secrets["openaiKey"]
+
+    async def process_page(url):
+        response = await loop.run_in_executor(None, requests.get, url)
         soup = BeautifulSoup(response.content, "html.parser")
-    
-    # Extract the text content from the parsed HTML
+        
+        # Extract the text content from the parsed HTML
         text_content = ''
         for p in soup.find_all('p'):
             text_content += p.text
-        openai.api_key = st.secrets["openaiKey"]
+            
         # Use OpenAI to summarize the text content
-        summary = openai.Completion.create(
+        summary = await openai.Completion.create(
             engine="text-davinci-003",
-            prompt=f"In this text which information is helpful in explaining what the opporuntity is and please extract email or contact infomarion if they are present{text_content}",
+            prompt=f"In this text which information is helpful in explaining what the opportunity is and please extract email or contact information if they are present{text_content}",
             temperature=0.3,
             max_tokens=60,
             n=1,
@@ -147,11 +143,24 @@ if input_text:
         )
         
         # Extract relevant information from the summary
-        relevant_info += summary['choices'][0]['text']
+        relevant_info = summary['choices'][0]['text']
+        return relevant_info
 
-    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also share with me their contact information. Make sure to refer to this as a program"+str(relevant_info)
+    async def process_pages(urls):
+        tasks = []
+        for url in urls:
+            tasks.append(asyncio.ensure_future(process_page(url)))
+        results = await asyncio.gather(*tasks)
+        return results
+
+    results = loop.run_until_complete(process_pages(urls))
+
+    # Join the results into a single string
+    relevant_info = "\n\n".join(results)
+
+    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also share with me their contact information. Make sure to refer to this as a program" + str(relevant_info)
+
     if prompt:
-        openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
         brainstorming_output = response['choices'][0]['text']
         today = datetime.today().strftime('%Y-%m-%d')
@@ -173,7 +182,3 @@ if input_text:
                 writer = csv.writer(f, delimiter=',', lineterminator='\n')
                 writer.writerow(fields)
 
-        
-        
-
-        
