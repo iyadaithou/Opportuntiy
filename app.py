@@ -169,8 +169,8 @@ async def main(urls):
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
+    urls = ['https://example.com/page1', 'https://example.com/page2', 'https://example.com/page3']
     relevant_info_string = loop.run_until_complete(main(urls))
-    print(relevant_info_string)
 
 
 
