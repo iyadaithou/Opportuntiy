@@ -53,7 +53,7 @@ def main():
         relevant_info = loop.run_until_complete(process_pages(list_of_urls))
         prompt = "Avoid repetition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then list the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted, follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text: " + relevant_info
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
-        brainstorming_output = response['choices'][0]['text']
+        brainstorming_output = list_of_urls
         st.info(brainstorming_output)
 
 
