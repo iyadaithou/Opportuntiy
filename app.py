@@ -49,9 +49,9 @@ if 'output' not in st.session_state:
 
 if st.session_state['output'] <=2:
     st.markdown("""
-    # Brainlyne Story Teller- AI
+    # Brainlyne Opportunity Analyzer
     """)
-    input_text = st.text_input("Paste the website url", disabled=False, placeholder="Paste your prompt, idea, or essay here!")
+    input_text = st.text_input("Paste the website url", disabled=False, placeholder="Paste th eopportunity url and let us do the magic!")
     st.session_state['output'] = st.session_state['output'] + 1
 else:
     # input_text = st.text_input("Brainstorm ideas for", disabled=True)
@@ -125,7 +125,7 @@ if input_text:
     for p in soup.find_all('p'):
         text_content += p.text
 
-    prompt = "Summarize this text and tell me what I shoulf focus on if I am a condidate interested in getting this opportunity or want to be accepted   "+str(text_content)
+    prompt = " Tell me what in a list what I should focus on if I want to be selected for this opportunity and examples of what I need to highlight "+str(text_content)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=800)
