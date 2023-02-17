@@ -31,7 +31,7 @@ def process_page(url,relevant_info):
     summary = openai.Completion.create(
         engine="text-davinci-003",
         prompt="does this information: "+text_content+"  \n help  to improve response to what hat is the program? is it a school? summer institue, a company? or what exactly, and what are the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted. \n \n Here is the current information "+ relevant_info+" rewite a new response if it will provide clearer answer to the question, if not keep it unchanged ",
-        temperature=0.3,
+        temperature=0.1,
         max_tokens=450,
         n=1,
         stop=None,
@@ -65,7 +65,7 @@ def main():
             + relevant_info
         )
         response = openai.Completion.create(
-            engine="text-davinci-003", prompt=prompt, temperature=0.3, max_tokens=2000
+            engine="text-davinci-003", prompt=prompt, temperature=0.1, max_tokens=2000
         )
         brainstorming_output = response["choices"][0]["text"]
         st.info(brainstorming_output)
