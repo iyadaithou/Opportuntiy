@@ -10,6 +10,7 @@ import re
 
 
 
+
 st.set_page_config(page_title="Brainlyne Opportunity Analyzer")
 
 
@@ -123,7 +124,7 @@ if input_text:
     soup = BeautifulSoup(response.content, "html.parser")
 
     # Find all the links on the page that point to the same domain
-    links = soup.find_all("a", href=re.compile("^" + base_url))
+    links = soup.find_all("a", href=re.compile("^" + input_text))
 
     for link in links:
         url = link.get("href")
