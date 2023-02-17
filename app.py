@@ -31,8 +31,8 @@ with st.sidebar:
     st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
     st.markdown("""
     # How does it work
-    Simply enter the topic of interest in the text field below and ideas will be generated.
-    You can also download the essay as txt.
+    Simply enter the link of the opporuntity and we will analyze it to recommend qualities you can focus on
+            You can also download the recommendation as txt.
     """)
     st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
     st.markdown("""
