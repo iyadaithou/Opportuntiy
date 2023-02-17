@@ -107,7 +107,7 @@ st.markdown(
    )
 
 
-    relevant_info=""
+relevant_info=""
 if input_text:
     urls = [input_text]
     # Send a GET request to the base URL and extract its content
