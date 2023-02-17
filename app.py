@@ -144,7 +144,7 @@ async def process_page(url):
     # Use OpenAI to summarize the text content
     summary = await openai.Completion.create(
         engine="text-davinci-003",
-        prompt=f"Don't give generic sentences, What is this program about and which list of qualities would make someone a good fit for this program{text_content}",
+        prompt=f"Don't give generic sentences, What does this organization do? which list of qualities would make someone a good fit for this program{text_content}",
         temperature=0.5,
         max_tokens=600,
         n=1,
