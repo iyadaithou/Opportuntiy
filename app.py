@@ -31,7 +31,7 @@ def process_page(url,relevant_info):
     summary = openai.Completion.create(
         engine="text-davinci-003",
         prompt="does this information: "+text_content+"  \n help  to improve response to what hat is the program? is it a school? summer institue, a company? or what exactly, and what are the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted. \n \n Here is the current information "+ relevant_info+" rewite a new response if it will provide clearer answer to the question, if not keep it unchanged ",
-        temperature=0.5,
+        temperature=0.3,
         max_tokens=450,
         n=1,
         stop=None,
@@ -61,11 +61,11 @@ def main():
         list_of_urls = MyHTMLParser(input_text).get_urls()
         relevant_info = process_pages(list_of_urls[:5])
         prompt = (
-            "Avoid repetition and being generic, and write in a clear style with an advising tone. First define what is the program? is it a school? summer institue, a company? or what exactly, then list the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted, follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text: "
+            "Avoid repetition and being generic, and write in a clear style with an advising tone. First gives the name of the program, then waht is the program? is it a school? summer institue, a company? or what exactly, then list the qualities or strengths I should focus on to be a good fit for this specifc program;  follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program "
             + relevant_info
         )
         response = openai.Completion.create(
-            engine="text-davinci-003", prompt=prompt, max_tokens=2000
+            engine="text-davinci-003", prompt=prompt temperature=0.3, max_tokens=2000
         )
         brainstorming_output = response["choices"][0]["text"]
         st.info(brainstorming_output)
