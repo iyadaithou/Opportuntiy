@@ -184,7 +184,7 @@ if input_text:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
         #brainstorming_output = response['choices'][0]['text']
-        brainstorming_output = relevant_info
+        brainstorming_output = prompt
         
         st.info(brainstorming_output)
        
