@@ -177,7 +177,7 @@ if input_text:
 
 
 
-    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites, by sharing some stories. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program"+str(relevant_info)
+    prompt = "Avoide repeition, and write in a clear style with an advising tone. Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites, by sharing some stories. Also, please write a couple of paragraph analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+str(relevant_info)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
