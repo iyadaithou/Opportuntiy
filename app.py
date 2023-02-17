@@ -187,20 +187,7 @@ if input_text:
         topic = "Essay"+input_text+"\n@Date: "+str(today)+"\n"+brainstorming_output
         
         st.info(brainstorming_output)
-        filename = "brainstorming_"+str(today)+".txt"
-        btn = st.download_button(
-            label="Download Recommendation",
-            data=topic,
-            file_name=filename
-        )
-        fields = [input_text, brainstorming_output, str(today)]
-        # read local csv file
-        r = pd.read_csv('./data/prompts.csv')
-        if len(fields)!=0:
-            with open('./data/prompts.csv', 'a', encoding='utf-8', newline='') as f:
-                # write to csv file (append mode)
-                writer = csv.writer(f, delimiter=',', lineterminator='\n')
-                writer.writerow(fields)
+       
 
         
         
