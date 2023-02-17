@@ -125,7 +125,7 @@ if input_text:
     for p in soup.find_all('p'):
         text_content += p.text
 
-    prompt = " Tell me what in a list what I should focus on if I want to be selected for this opportunity and examples of what I need to highlight "+str(text_content)
+    prompt = " Tell me which personal qualities or strengths I should focus on to be good fit for this opportunity and get accepted "+str(text_content)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
