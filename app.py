@@ -166,6 +166,11 @@ async def main(urls):
     relevant_info = await process_pages(urls)
     return relevant_info
 
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    relevant_info_string = loop.run_until_complete(main(urls))
+    print(relevant_info_string)
+
 
 
 
