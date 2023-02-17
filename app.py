@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 
 
-st.set_page_config(page_title="Brainlyne Essay Editor")
+st.set_page_config(page_title="Brainlyne Opportunity Analyzer")
 
 
 html_temp = """
@@ -26,7 +26,7 @@ button = """
 with st.sidebar:
     st.markdown("""
     # About 
-    Brainlyne Essay Support is a helper tool built and tuned to support with the generation of ideas for essays
+    Brainlyne Opporunity Analyzer is a tool built and tuned to support students applying to specifc opporunities
     """)
     st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
     st.markdown("""
@@ -125,7 +125,7 @@ if input_text:
     for p in soup.find_all('p'):
         text_content += p.text
 
-    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites "+str(text_content)
+    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for "+str(text_content)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
