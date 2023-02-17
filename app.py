@@ -179,8 +179,7 @@ if __name__ == '__main__':
 if input_text:
 
     listofurls= get_all_pages(input_text)
-
-    relevant_info= main(listofurls)
+    relevant_info= loop.run_until_complete(main(listofurls))
 
 
 
