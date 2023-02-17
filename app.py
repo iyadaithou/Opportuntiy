@@ -61,7 +61,7 @@ def main():
         return
 
     with st.spinner("Fetching and summarizing content. Please wait..."):
-        list_of_urls = get_all_pages(input_text)
+        list_of_urls = get_all_pages(str(input_text))
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         relevant_info = loop.run_until_complete(process_pages(list_of_urls))
