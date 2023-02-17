@@ -24,13 +24,27 @@ class MyHTMLParser(HTMLParser):
 
 
 def process_page(url,relevant_info):
+
     response = requests.get(url)
     parser = MyHTMLParser(url)
     parser.feed(response.text)
     text_content = "\n".join(parser.get_data())
+  
+
+    response = openai.Completion.create(
+    model="text-davinci-003",
+    prompt=f"{text_content}\n\nTl;dr",
+    temperature=0.1,
+    max_tokens=450,
+    top_p=1.0,
+    frequency_penalty=0.0,
+    presence_penalty=1
+    )
+    currentext=""
+    currentext=response[0]["text"]
     summary = openai.Completion.create(
         engine="text-davinci-003",
-        prompt="does this information: "+text_content+"  \n help  to improve response to what hat is the program? is it a school? summer institue, a company? or what exactly, and what are the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted. \n \n Here is the current information "+ relevant_info+" rewite a new response if it will provide clearer answer to the question, if not keep it unchanged ",
+        prompt="does this information: "+currentext+"  \n help  to improve response to what hat is the program? is it a school? summer institue, a company? or what exactly, and what are the qualities or strengths I should focus on to be a good fit for this opportunity and get accepted. \n \n Here is the current information "+ relevant_info+" rewite a new response if it will provide clearer answer to the question, if not keep it unchanged ",
         temperature=0.1,
         max_tokens=450,
         n=1,
