@@ -4,11 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 import asyncio
 
+
 st.set_page_config(page_title="Brainlyne Opportunity Analyzer")
+
 openai.api_key = st.secrets["openaiKey"]
 
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
+loop = asyncio.get_event_loop()
 
 def get_all_pages(domain_url):
     # Parse the domain URL to extract the subdomain
@@ -36,7 +37,7 @@ async def process_page(url):
     # Use OpenAI to summarize the text content
     summary = await openai.Completion.create(
         engine="text-davinci-003",
-        prompt=f"What does this organization do? which list of qualities will someone need to have to work here, get accepted, or join the team; Make it concise and very brief without losing relevant information {text_content}",
+        prompt=f"What does this organization do? Which list of qualities will someone need to have to work here, get accepted, or join the team? Make it concise and very brief without losing relevant information {text_content}",
         temperature=0.2,
         max_tokens=100,
         n=1,
@@ -58,18 +59,17 @@ async def main(urls):
     relevant_info = await process_pages(urls)
     return relevant_info
 
-def run_app():
+# Add a Submit button to trigger the main function
+if st.button("Submit"):
     input_text = st.text_input("Paste the website url", disabled=False, placeholder="Paste the opportunity's url, and let us do the magic!")
+    
     if input_text:
-        listofurls= get_all_pages(input_text)
-        relevant_info= loop.run_until_complete(main(listofurls))
-        #prompt = "Avoid repeition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then list the qualities or strengths I should focus on to be good fit for this opportunity and get accepted, follow that by stories and example of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text "+relevant_info    
-        prompt = relevant_info +"Hello"   
+        listofurls = get_all_pages(input_text)
+        relevant_info = loop.run_until_complete(main(listofurls))
 
-        if prompt:
-            response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
-            brainstorming_output = prompt
-            st.info(brainstorming_output)
-
-if __name__ == '__main__':
-    run_app()
+        prompt = "Avoid repeition and being too generic, and write in a clear style with an advising tone. First define what the website is about, then list the qualities or strengths I should focus on to be good fit for this opportunity and get accepted, follow that by stories and examples of how to talk about those qualities. Also, please write a couple of paragraphs analyzing what they might be looking for. Make sure to refer to this as a program. Here is the text: " + relevant_info
+        
+        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
+        brainstorming_output = response['choices'][0]['text']
+        
+        st.info(brainstorming_output)
