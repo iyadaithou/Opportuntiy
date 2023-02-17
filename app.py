@@ -149,7 +149,7 @@ if input_text:
         # Extract relevant information from the summary
         relevant_info += summary['choices'][0]['text']
 
-    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also advise me of who to contact and what to say in inital reach out "+str(relevant_info)
+    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also share with me their contact information. Make sure to refer to this as a program"+str(relevant_info)
     if prompt:
         openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
