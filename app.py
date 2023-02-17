@@ -30,7 +30,7 @@ def process_page(url,relevant_info):
     text_content = "\n".join(parser.get_data())
     summary = openai.Completion.create(
         engine="text-davinci-003",
-        prompt="How can you use the "+text_content+" to improve the response "+ relevant_info+" and give a more accurate organization to what does this organization do and which qaulities does an applicant or person need to join them or be selected?"
+        prompt="How can you use the "+text_content+" to improve the response "+ relevant_info+" and give a more accurate organization to what does this organization do and which qaulities does an applicant or person need to join them or be selected?",
         temperature=0.5,
         max_tokens=450,
         n=1,
