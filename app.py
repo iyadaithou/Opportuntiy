@@ -183,8 +183,6 @@ if input_text:
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=2000)
         #brainstorming_output = response['choices'][0]['text']
         brainstorming_output = print(relevant_info)
-        today = datetime.today().strftime('%Y-%m-%d')
-        topic = "Essay"+input_text+"\n@Date: "+str(today)+"\n"+brainstorming_output
         
         st.info(brainstorming_output)
        
