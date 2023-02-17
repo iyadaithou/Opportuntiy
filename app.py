@@ -1,11 +1,18 @@
-import asyncio
+import streamlit as st
+import openai
+from datetime import datetime
+from streamlit.components.v1 import html
+import pandas as pd
+import csv
 import requests
 from bs4 import BeautifulSoup
-import re
-import openai
-import streamlit as st
+import re 
+
+
+
 
 st.set_page_config(page_title="Brainlyne Opportunity Analyzer")
+
 
 html_temp = """
                 <div style="background-color:{};padding:1px">
@@ -17,10 +24,11 @@ button = """
 <script type="text/javascript" src="https://brainlyne.com" data-name="bmc-button" data-slug="nainiayoub" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Join Brainlyne" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
 """
 
+
 with st.sidebar:
     st.markdown("""
     # About 
-    Brainlyne Opporunity Analyzer is a tool built and tuned to support students applying to specific opporunities
+    Brainlyne Opporunity Analyzer is a tool built and tuned to support students applying to specifc opporunities
     """)
     st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
     st.markdown("""
@@ -34,6 +42,8 @@ with st.sidebar:
     """,
     unsafe_allow_html=True,
     )
+
+
 
 input_text = None
 if 'output' not in st.session_state:
@@ -103,64 +113,73 @@ st.markdown(
         }
     </style>
     """,
- unsafe_allow_html=True
-   )
+    unsafe_allow_html=True,
+)
 
+def get_all_pages(domain_url):
+    # Parse the domain URL to extract the subdomain
+    
 
-relevant_info=""
-if input_text:
-    urls = [input_text]
-    # Send a GET request to the base URL and extract its content
-    response = requests.get(input_text)
+    # Send a GET request to the domain URL and extract its content
+    response = requests.get(domain_url)
     soup = BeautifulSoup(response.content, "html.parser")
 
-    # Find all the links on the page that point to the same domain
-    links = soup.find_all("a", href=re.compile("^" + input_text))
+    # Find all the links on the page that point to the same domain or subdomain
+    links = soup.find_all("a", href=lambda href: href and (domain_url in href))
 
-    for link in links:
-        url = link.get("href")
-        urls.append(url)
+    # Extract the URLs of all the pages on the same domain or subdomain
+    page_urls = [link.get("href") for link in links]
 
-    openai.api_key = st.secrets["openaiKey"]
+    return page_urls
 
-    async def process_page(url):
-        response = await loop.run_in_executor(None, requests.get, url)
-        soup = BeautifulSoup(response.content, "html.parser")
+async def process_page(url):
+    response = await loop.run_in_executor(None, requests.get, url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    
+    # Extract the text content from the parsed HTML
+    text_content = ''
+    for p in soup.find_all('p'):
+        text_content += p.text
         
-        # Extract the text content from the parsed HTML
-        text_content = ''
-        for p in soup.find_all('p'):
-            text_content += p.text
-            
-        # Use OpenAI to summarize the text content
-        summary = await openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=f"In this text which information is helpful in explaining what the opportunity is and please extract email or contact information if they are present{text_content}",
-            temperature=0.3,
-            max_tokens=60,
-            n=1,
-            stop=None,
-        )
-        
-        # Extract relevant information from the summary
-        relevant_info = summary['choices'][0]['text']
-        return relevant_info
+    # Use OpenAI to summarize the text content
+    summary = await openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=f"In this text which information is helpful in explaining what the opportunity is and please extract email or contact information if they are present{text_content}",
+        temperature=0.3,
+        max_tokens=60,
+        n=1,
+        stop=None,
+    )
+    
+    # Extract relevant information from the summary
+    relevant_info = summary['choices'][0]['text']
+    return relevant_info
 
-    async def process_pages(urls):
-        tasks = []
-        for url in urls:
-            tasks.append(asyncio.ensure_future(process_page(url)))
-        results = await asyncio.gather(*tasks)
-        return results
+async def process_pages(urls):
+    tasks = []
+    for url in urls:
+        tasks.append(asyncio.ensure_future(process_page(url)))
+    results = await asyncio.gather(*tasks)
+    return ' '.join(results)
 
-    results = loop.run_until_complete(process_pages(urls))
+async def main(urls):
+    relevant_info = await process_pages(urls)
+    return relevant_info
 
-    # Join the results into a single string
-    relevant_info = "\n\n".join(results)
 
-    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also share with me their contact information. Make sure to refer to this as a program" + str(relevant_info)
 
+
+
+if input_text:
+
+    listofurls= get_all_pages(input_text)
+    relevant_info= main(listofurls)
+
+
+
+    prompt = " Tell me which qualities or strengths I should focus on to be good fit for this opportunity and get accepted, give me examples as well of how I can talk about those activites. You can also write a couple of paragraph analyzing what they might be looking for. Also share with me their contact information. Make sure to refer to this as a program"+str(relevant_info)
     if prompt:
+        openai.api_key = st.secrets["openaiKey"]
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=1000)
         brainstorming_output = response['choices'][0]['text']
         today = datetime.today().strftime('%Y-%m-%d')
@@ -182,3 +201,7 @@ if input_text:
                 writer = csv.writer(f, delimiter=',', lineterminator='\n')
                 writer.writerow(fields)
 
+        
+        
+
+        
